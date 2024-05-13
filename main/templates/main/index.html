@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load thumbnail %}
+{% load static %}
+{% load bootstrap4 %}
+{% block content %}
+{% if no_random %}
+<h2>5 последних рецептов</h2>
+{% else %}
+<h2>5 случайных рецептов</h2>
+{% endif %}
+{% if rss %}
+<ul class="list-unstyled">
+    {% for rs in rss %}
+    <li class="media my-5 p-3 border">
+        {% url 'main:detail' category_pk=rs.category.pk pk=rs.pk as url %}
+        <a href="{{ url }}{{ all }}">
+            {% if rs.image %}
+            <img class="mr-3" src="{% thumbnail rs.image 'default' %}">
+            {% else %}
+            <img class="mr-3" src="{% static 'main/empty.jpg' %}">
+            {% endif %}
+        </a>
+        <div>
+            <h4><a href="{% url 'main:by_category' pk=rs.category.pk %}">{{ rs.category.name }}</a></h4>
+            <h3><a href="{{ url }}{{ all }}">{{ rs.title }}</a></h3>
+            <div>{{ rs.description }}</div>
+            <p class="font-weight-bold">Время приготовления: {{ rs.cooking_time }} мин.</p>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

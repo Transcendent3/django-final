@@ -1,0 +1,70 @@
+{% load bootstrap4 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <link rel="shortcut icon" href="{% static 'main/favicon.ico' %}" type="image/x-icon">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Главная{% endblock %} - Сайт рецептов</title>
+  {% bootstrap_css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'main/style.css' %}">
+  {% bootstrap_javascript jquery='slim' %}
+</head>
+
+<body class="container-fluid">
+  <header class="mb-4">
+    <h1 class="display-1 text-center">
+      <a class="nav-link" href="{% url 'main:all_recipes' %}">Рецепты</a>
+    </h1>
+  </header>
+  <div class="row">
+
+    <ul class="col nav justify-content border">
+      <li class="nav-item"><a class="nav-link" href="{% url 'main:index' %}">Главная</a></li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">Категория</a>
+        <div class="dropdown-menu">
+          {% for category in categories %}
+          <a class="dropdown-item" href="{% url 'main:by_category' pk=category.pk %}">{{ category.name }}</a>
+          {% endfor %}
+        </div>
+      </li>
+      {% if user.is_authenticated %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+          aria-expanded="false">Пpoфиль</a>
+        <div class="dropdown-menu">
+          <a class="dropdown-item" href="{% url 'main:profile' %}">Moи рецепты</a>
+          <a class="dropdown-item" href="{% url 'main:profile_change' %}">Изменить личные данные</a>
+          <a class="dropdown-item" href="{% url 'main:password_change' %}">Изменить пароль</a>
+          <div class="dropdown-divider"></div>
+          <form action="{% url 'main:logout' %}" method="post">
+            {% csrf_token %}
+            <button class="dropdown-item" type="submit">Выйти</button>
+          </form>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'main:profile_delete' %}">Удалить</a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'main:login' %}">Bxoд</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'main:register' %}">Регистрация</a></li>
+      {% endif %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'main:other' page='about' %}">О сайте</a></li>
+    </ul>
+  </div>
+  <section class="border ру-2">
+    {% bootstrap_messages %}
+    {% block content %}
+    <p>Скоро тут появится текст...</p>
+    {% endblock %}
+  </section>
+  <footer class="mt-3">
+    <p class="text-right font-italic">&copy;2024 Павел Поздняков.</p>
+  </footer>
+</body>
+
+</html>
